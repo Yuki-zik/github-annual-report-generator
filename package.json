@@ -2,7 +2,7 @@
   "private": true,
   "name": "github-annual-report-generator",
   "version": "1.0.0",
-  "description": "A GitHub Action to generate your personal annual report.",
+  "description": "An automated tool to generate your personal GitHub annual report, featuring rolling 365-day statistics, AI-powered summaries, and beautiful visualizations.",
   "type": "module",
   "scripts": {
     "report": "node scripts/year-report/generate-report.mjs",
