@@ -4,19 +4,19 @@
 
 </div>
 
-# Yuki-zik 项目补充说明（开发与运维指南）
+# Yuki-zik 项目补充说明（开发指南）
 
 > 本文件用于补充 `README.md`，并以不同文件名存放，避免直接作为仓库首页主说明展示。
 
 ## 1. 项目定位
 
-该项目是一个 GitHub 年报自动生成系统，目标是定期产出可直接展示在个人主页的年度报告资产，核心产物包括：
+该项目是一个本地 GitHub 年报生成工具，目标是产出可直接展示在个人主页的年度报告资产，核心产物包括：
 
 - 年报图片：`assets/github-annual-report.png`
 - 兼容 SVG：`assets/github-annual-report.svg`
 - 数据快照：`assets/github-annual-report.json`
 
-项目同时支持本地手动生成与 GitHub Actions 定时更新。
+仓库不内置 GitHub Actions 工作流，定位为开源分享和本地生成模板。
 
 ## 2. 核心功能
 
@@ -29,7 +29,6 @@
 ## 3. 目录结构
 
 ```text
-.github/workflows/yearly-report.yml   # 自动化任务
 scripts/year-report/generate-report.mjs  # 主入口
 scripts/year-report/github-client.mjs    # GitHub GraphQL 客户端
 scripts/year-report/stats.mjs            # 统计计算
@@ -98,8 +97,8 @@ assets/                                   # 生成产物目录
 
 | 变量名 | 必填 | 默认值 | 说明 |
 |---|---|---|---|
-| `GH_STATS_TOKEN` | 本地必需 / Actions 建议 | `github.token` | GitHub Token（用于 GraphQL 拉取；Actions 未设置 Secret 时回退到仓库级 token） |
-| `GH_USERNAME` | 否 | 无 | 目标用户名（GitHub Actions 中自动获取） |
+| `GH_STATS_TOKEN` | 是 | 无 | GitHub Token（用于 GraphQL 拉取） |
+| `GH_USERNAME` | 是 | 无 | 目标用户名 |
 | `REPORT_TZ` | 否 | `Asia/Shanghai` | 年份与“今天”的时区基准 |
 | `OPENAI_API_KEY` | 否 | 无 | AI 摘要密钥，不填则自动降级 |
 | `OPENAI_BASE_URL` | 否 | `https://api.openai.com/v1` | OpenAI 兼容接口根地址 |
@@ -111,7 +110,7 @@ assets/                                   # 生成产物目录
 ### 6.1 前置条件
 
 - Node.js 22+
-- 可用的 GitHub Token（本地运行设置 `GH_STATS_TOKEN`；GitHub Actions 可回退到 `github.token`）
+- 可用的 GitHub Token（设置 `GH_STATS_TOKEN`）
 - 若需真实截图渲染，需安装 `playwright` 或 `playwright-core`
 - 若需真实截图渲染，需安装 Chromium 浏览器：`npx playwright install chromium`
 
@@ -134,37 +133,20 @@ node scripts/year-report/generate-report.mjs --year 2025 --no-ai
 node --test scripts/year-report/__tests__/*.test.mjs
 ```
 
-## 7. 自动化工作流
+## 7. 输出产物说明
 
-文件：`.github/workflows/yearly-report.yml`
-
-触发方式：
-
-1. 定时：`cron: "15 2 * * 1"`（UTC 每周一 02:15）。
-2. 手动：`workflow_dispatch`，可选输入 `year` 和 `no_ai`。
-
-任务流程：
-
-1. `Checkout`。
-2. `Setup Node 22`。
-3. 安装 Playwright Chromium。
-4. 运行生成脚本。
-5. 若产物有变更，自动提交并推送更新。
-
-## 8. 输出产物说明
-
-### 8.1 `assets/github-annual-report.png`
+### 7.1 `assets/github-annual-report.png`
 
 最终展示主图，可能来源于：
 
 - `playwright` 真正渲染截图
 - 回退纯色图（渲染失败时）
 
-### 8.2 `assets/github-annual-report.svg`
+### 7.2 `assets/github-annual-report.svg`
 
 PNG 的兼容封装文件，内部 `<image href="data:image/png;base64,...">`。
 
-### 8.3 `assets/github-annual-report.json`
+### 7.3 `assets/github-annual-report.json`
 
 运行快照，关键字段包括：
 
@@ -175,14 +157,14 @@ PNG 的兼容封装文件，内部 `<image href="data:image/png;base64,...">`。
 - `render.mode` / `render.reason`
 - `rateLimit`：GitHub GraphQL 剩余额度信息
 
-## 9. 常见问题与排查
+## 8. 常见问题与排查
 
-- 报错 `GH_STATS_TOKEN is required`：本地未设置 GitHub Token，或 Actions 环境没有注入 `GH_STATS_TOKEN` / `github.token`。
+- 报错 `GH_STATS_TOKEN is required`：未设置 GitHub Token。
 - AI 总是 fallback：检查 `OPENAI_API_KEY`、`OPENAI_BASE_URL`、模型名、网络可达性。
 - 只有纯色 PNG：Playwright 或 Chromium 不可用，查看 JSON 的 `render.reason`。
 - 仓库/语言为空：当年贡献数据不足，会自动填充占位项，这是预期行为。
 
-## 10. 维护建议
+## 9. 维护建议
 
 - 若调整版式，请先改 `design-spec.mjs`，再联动更新 `report-html.mjs`。
 - 若调整统计口径，请同步更新 `stats.test.mjs` 以锁定行为。
