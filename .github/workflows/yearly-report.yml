@@ -1,4 +1,4 @@
-﻿name: yearly report
+name: yearly report
 
 on:
   schedule:
@@ -37,13 +37,13 @@ jobs:
       - name: Install Playwright Chromium
         run: |
           set -euo pipefail
-          npm install --no-save --package-lock=false playwright@1.51.1
+          npm install --no-save --package-lock=false playwright@1.59.1
           npx playwright install --with-deps chromium
 
       - name: Generate yearly report assets
         env:
           GH_USERNAME: ${{ github.repository_owner }}
-          GH_STATS_TOKEN: ${{ secrets.GH_STATS_TOKEN }}
+          GH_STATS_TOKEN: ${{ secrets.GH_STATS_TOKEN || github.token }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           OPENAI_BASE_URL: ${{ secrets.OPENAI_BASE_URL }}
           OPENAI_MODEL: ${{ secrets.OPENAI_MODEL }}

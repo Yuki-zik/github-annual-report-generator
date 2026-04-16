@@ -29,7 +29,7 @@ Go to `Settings > Secrets and variables > Actions` and add the following reposit
 
 | Secret Name | Required | Description |
 |---|---|---|
-| `GH_STATS_TOKEN` | **Yes** | A GitHub Personal Access Token (PAT). Scopes: `read:user`, `repo`, `read:org`. |
+| `GH_STATS_TOKEN` | Recommended | A GitHub Personal Access Token (PAT). GitHub Actions falls back to the repository-scoped `github.token` when this secret is absent. Use a PAT for private contribution and organization data. Suggested scopes: `read:user`, `repo`, `read:org`. |
 | `OPENAI_API_KEY` | No | OpenAI API Key. Required for AI summaries. |
 | `OPENAI_BASE_URL` | No | Custom base URL for OpenAI-compatible APIs (default: `https://api.openai.com/v1`). |
 | `OPENAI_MODEL` | No | Custom model name (default: `gpt-4o-mini`). |
@@ -55,7 +55,7 @@ See [examples/PROFILE_README.md](examples/PROFILE_README.md) for a full example.
 
 1. Clone the repository.
 2. Install dependencies: `npm install`.
-3. Set environment variables in `.env` or shell (`GH_STATS_TOKEN`, `GH_USERNAME`).
+3. Set environment variables in `.env` or shell (`GH_STATS_TOKEN`, `GH_USERNAME`). Local runs require `GH_STATS_TOKEN`.
 4. Run report generation:
    ```bash
    node scripts/year-report/generate-report.mjs --dry-run

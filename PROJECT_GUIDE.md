@@ -98,7 +98,7 @@ assets/                                   # 生成产物目录
 
 | 变量名 | 必填 | 默认值 | 说明 |
 |---|---|---|---|
-| `GH_STATS_TOKEN` | 是 | 无 | GitHub Token（用于 GraphQL 拉取） |
+| `GH_STATS_TOKEN` | 本地必需 / Actions 建议 | `github.token` | GitHub Token（用于 GraphQL 拉取；Actions 未设置 Secret 时回退到仓库级 token） |
 | `GH_USERNAME` | 否 | 无 | 目标用户名（GitHub Actions 中自动获取） |
 | `REPORT_TZ` | 否 | `Asia/Shanghai` | 年份与“今天”的时区基准 |
 | `OPENAI_API_KEY` | 否 | 无 | AI 摘要密钥，不填则自动降级 |
@@ -111,7 +111,7 @@ assets/                                   # 生成产物目录
 ### 6.1 前置条件
 
 - Node.js 22+
-- 可用的 GitHub Token（`GH_STATS_TOKEN`）
+- 可用的 GitHub Token（本地运行设置 `GH_STATS_TOKEN`；GitHub Actions 可回退到 `github.token`）
 - 若需真实截图渲染，需安装 `playwright` 或 `playwright-core`
 - 若需真实截图渲染，需安装 Chromium 浏览器：`npx playwright install chromium`
 
@@ -177,7 +177,7 @@ PNG 的兼容封装文件，内部 `<image href="data:image/png;base64,...">`。
 
 ## 9. 常见问题与排查
 
-- 报错 `GH_STATS_TOKEN is required`：未设置 GitHub Token。
+- 报错 `GH_STATS_TOKEN is required`：本地未设置 GitHub Token，或 Actions 环境没有注入 `GH_STATS_TOKEN` / `github.token`。
 - AI 总是 fallback：检查 `OPENAI_API_KEY`、`OPENAI_BASE_URL`、模型名、网络可达性。
 - 只有纯色 PNG：Playwright 或 Chromium 不可用，查看 JSON 的 `render.reason`。
 - 仓库/语言为空：当年贡献数据不足，会自动填充占位项，这是预期行为。

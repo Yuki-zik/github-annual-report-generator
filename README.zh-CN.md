@@ -29,7 +29,7 @@
 
 | Secret 名称 | 是否必须 | 描述 |
 |---|---|---|
-| `GH_STATS_TOKEN` | **是** | GitHub 个人访问令牌 (PAT)。权限范围：`read:user`, `repo`, `read:org`。 |
+| `GH_STATS_TOKEN` | 建议 | GitHub 个人访问令牌 (PAT)。当未设置该 Secret 时，GitHub Actions 会回退使用仓库级 `github.token`。如需包含私有贡献或组织数据，请使用 PAT。建议权限范围：`read:user`, `repo`, `read:org`。 |
 | `OPENAI_API_KEY` | 否 | OpenAI API Key。用于生成 AI 摘要。 |
 | `OPENAI_BASE_URL` | 否 | OpenAI 兼容 API 的自定义 Base URL (默认：`https://api.openai.com/v1`)。 |
 | `OPENAI_MODEL` | 否 | 自定义模型名称 (默认：`gpt-4o-mini`)。 |
@@ -55,7 +55,7 @@
 
 1. 克隆仓库。
 2. 安装依赖：`npm install`。
-3. 在 `.env` 文件或终端中设置环境变量（`GH_STATS_TOKEN`, `GH_USERNAME`）。
+3. 在 `.env` 文件或终端中设置环境变量（`GH_STATS_TOKEN`, `GH_USERNAME`）。本地运行仍需要 `GH_STATS_TOKEN`。
 4. 运行报告生成：
    ```bash
    node scripts/year-report/generate-report.mjs --dry-run
